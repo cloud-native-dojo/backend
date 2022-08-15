@@ -27,7 +27,7 @@ def create_pod(pod: Pod):
             callback = k8s.make_pod()
 
 
-    return {"test": pod}
+    return {"pod_name": callback}
 
 @app.get("/pods/")
 def get_pod():
