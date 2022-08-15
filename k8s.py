@@ -2,15 +2,15 @@ import time
 
 import subprocess, sys
 
-def main():
+def make_pod():
     cp = subprocess.run(['C:/Program Files/helm/helm','--set', 'service.type=NodePort', 'install', 'bitnami/wordpress', '--generate-name'])
     if cp.returncode != 0:
         print('ls failed.', file=sys.stderr)
         sys.exit(1)
     
-    cp = subprocess.run(['kubectl', 'get', 'svc'], encoding='utf-8', stdout=subprocess.PIPE)
-    print(f'{cp.stdout}')
+    out = get_pod()
+    return out
 
-
-if __name__ == '__main__':
-    main()
+def get_pod():
+    cp = subprocess.run(['kubectl', 'get', 'svc', '--no-headers', '-o', 'custom-columns=\"NAME:.metadata.name,IP:.spec.clusterIP,PORT:.spec.ports[*].targetPort\"'], encoding='utf-8', stdout=subprocess.PIPE)
+    return cp.stdout.split('\n')

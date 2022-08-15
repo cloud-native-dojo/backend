@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import Dict
 from kubernetes import client, config
+import k8s
 
 app = FastAPI()
 
@@ -19,9 +20,18 @@ def read_root():
 
 @app.post("/pods/")
 def create_pod(pod: Pod):
-    for container in pod:
-         
-    return {"pod_name": pod}
+    print(pod)
+    for container in pod.containers.items():
+        print(container)
+        if container[0] == "wordpress":
+            callback = k8s.make_pod()
+
+
+    return {"test": pod}
+
+@app.get("/pods/")
+def get_pod():
+    return {"output": k8s.get_pod()}
 
 @app.post("/services/")
 def create_service(service: Service):
