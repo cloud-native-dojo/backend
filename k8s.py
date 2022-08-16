@@ -1,6 +1,7 @@
 import time
 
-import subprocess, sys
+import subprocess, sys, shlex
+from random import randint
 
 def make_pod():
     cp = subprocess.run(['C:/Program Files/helm/helm','--set', 'service.type=NodePort,persistence.storageClass=longhorn', 'install', 'bitnami/wordpress', '--generate-name'], encoding='utf-8', stdout=subprocess.PIPE)
@@ -13,6 +14,22 @@ def get_pod():
     cp = subprocess.run(['helm', 'list', '--short'], encoding='utf-8', stdout=subprocess.PIPE)
     return cp.stdout.split('\n')
 
-def delete_pod(pod_name):
-    cp = subprocess.run(['helm', 'uninstall', '--purge'], encoding='utf-8', stdout=subprocess.PIPE)
+def delete_pod(name):
+    cp = subprocess.run(['helm', 'uninstall', name], encoding='utf-8', stdout=subprocess.PIPE)
+    return cp.stdout
+
+def get_used_port():
+    cp = subprocess.run(['C:/Program Files/Docker/Docker/resources/bin/kubectl', 'get', 'svc', '--all-namespaces', '-o', 'go-template=\'{{range .items}}{{range.spec.ports}}{{if .nodePort}}{{.nodePort}}{{"\\n"}}{{end}}{{end}}{{end}}\''], encoding='utf-8', stdout=subprocess.PIPE)
+    ports = cp.stdout[1:-2].split('\n')
+    print(f"return:{ports}")
+    unusedport = []
+    while(len(unusedport) < 4):
+        num = randint(30000,32768)
+        if num not in ports and num not in unusedport:
+            unusedport.append(num)
+    print(unusedport)
+    return unusedport
+
+def update_port(name):
+    cp = subprocess.run(['kubectl' 'patch' 'service' name '--type=\'json\'' '-p=\'[{"op": "replace", "path": "/spec/ports/0/nodePort", "value": 31600}]\''], encoding='utf-8', stdout=subprocess.PIPE)
     return cp.stdout

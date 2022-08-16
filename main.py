@@ -11,7 +11,7 @@ class Pod(BaseModel):
 
 class Service(BaseModel):
     port: int
-    pod_name: str
+    name: str
 
 @app.get("/")
 def read_root():
@@ -27,7 +27,7 @@ def create_pod(pod: Pod):
             callback = k8s.make_pod()
 
 
-    return {"pod_name": callback}
+    return {"name": callback}
 
 @app.get("/pods/")
 def get_pod():
@@ -35,13 +35,19 @@ def get_pod():
 
 @app.post("/services/")
 def create_service(service: Service):
-    return {"service_name": "test_name"}
+    callback = k8s.change_port(name)
+    return {"result": callback}
 
-@app.delete("/pods/{pod_name}")
+@app.get("/ports_suggest/")
+def get_unused_port():
+    ports = k8s.get_used_port()
+    return {"sugessted_port":ports}
+
+@app.delete("/pods/{name}")
 def delete_pod():
-    callback = k8s.delete_pod(pod_name)
+    callback = k8s.delete_pod(name)
     return {"deleted": callback}
 
-@app.delete("/services/{service_name}")
-def delete_pod(service_name: str):
+@app.delete("/services/{name}")
+def delete_pod(name: str):
     return {"status": "test"}
