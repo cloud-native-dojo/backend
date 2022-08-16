@@ -37,9 +37,10 @@ def get_pod():
 def create_service(service: Service):
     return {"service_name": "test_name"}
 
-@app.delete("/pods/{pod_name}")
-def delete_pod(pod_name: str):
-    return {"status": "test"}
+@app.delete("/pods/{pod_id}")
+def delete_pod():
+    callback = k8s.delete_pod()
+    return {"deleteed": callback}
 
 @app.delete("/services/{service_name}")
 def delete_pod(service_name: str):
