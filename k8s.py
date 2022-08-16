@@ -30,6 +30,6 @@ def get_used_port():
     print(unusedport)
     return unusedport
 
-def update_port(name):
-    cp = subprocess.run(['kubectl' 'patch' 'service' name '--type=\'json\'' '-p=\'[{"op": "replace", "path": "/spec/ports/0/nodePort", "value": 31600}]\''], encoding='utf-8', stdout=subprocess.PIPE)
+def update_port(name, port):
+    cp = subprocess.run(['kubectl', 'patch', 'service', name, '--type=\'json\'', '-p=\'[{"op": "replace", "path": "/spec/ports/0/nodePort", "value": {}}]\''.format(port)], encoding='utf-8', stdout=subprocess.PIPE)
     return cp.stdout

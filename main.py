@@ -31,11 +31,11 @@ def create_pod(pod: Pod):
 
 @app.get("/pods/")
 def get_pod():
-    return {"output": k8s.get_pod()}
+    return {"pods": k8s.get_pod()}
 
 @app.post("/services/")
 def create_service(service: Service):
-    callback = k8s.change_port(name)
+    callback = k8s.change_port(service.name,service.port)
     return {"result": callback}
 
 @app.get("/ports_suggest/")
