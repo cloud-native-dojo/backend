@@ -1,5 +1,9 @@
 from fastapi import FastAPI
+<<<<<<< HEAD
 from starlette.middleware.cors import CORSMiddleware
+=======
+from fastapi.middleware.cors import CORSMiddleware
+>>>>>>> main
 from pydantic import BaseModel
 from typing import Dict
 import k8s
@@ -13,8 +17,6 @@ app.add_middleware(
     allow_methods=["*"],      
     allow_headers=["*"]      
 )
-
-
 class Pod(BaseModel):
     containers: Dict[str, int]
 

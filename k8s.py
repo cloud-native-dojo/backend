@@ -16,9 +16,8 @@ def make_pod():
 
 
 def get_pod():
-    cp = subprocess.run(['helm', 'list', '--short'],
-                        encoding='utf-8', stdout=subprocess.PIPE)
-    return cp.stdout.split('\n')
+    cp = subprocess.run(['helm', 'list', '--short'], encoding='utf-8', stdout=subprocess.PIPE)
+    return cp.stdout[:-1].split('\n')
 
 
 def delete_pod(name):
