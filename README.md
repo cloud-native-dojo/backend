@@ -21,7 +21,9 @@ https://helm.sh/ja/docs/intro/install/
 
 bitnamiのレポジトリを追加
 
+```
 helm repo add bitnami https://charts.bitnami.com/bitnami
+```
 
 起動する．
 
