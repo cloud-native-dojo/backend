@@ -6,6 +6,8 @@ import k8s
 
 app = FastAPI()
 
+ports=k8s.get_used_port()
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -20,6 +22,10 @@ class Pod(BaseModel):
 class Service(BaseModel):
     port: int
     name: str
+
+class Save(BaseModel):
+    island: Dict[str, str]
+    ship: Dict[str, str]
 
 
 @app.get("/")
@@ -45,13 +51,16 @@ def get_pod():
 
 @app.post("/services/")
 def create_service(service: Service):
-    callback = k8s.change_port(service.name, service.port)
+    callback = k8s.update_port(service.name, service.port)
     return {"result": callback}
 
+@app.get("/generate_ports/")
+def get_unused_port():
+    ports = k8s.get_used_port()
+    return {"sugessted_port": ports}
 
 @app.get("/ports_suggest/")
 def get_unused_port():
-    ports = k8s.get_used_port()
     return {"sugessted_port": ports}
 
 
@@ -60,7 +69,19 @@ def delete_pod():
     callback = k8s.delete_pod(name)
     return {"deleted": callback}
 
-
 @app.delete("/services/{name}")
 def delete_pod(name: str):
     return {"status": "test"}
+
+
+
+save_data = {}
+@app.post("/save/")
+def post_save(save: Save):
+    global save_data
+    save_data = save
+    return {"status": save_data}
+
+@app.get("/save/")
+def get_save():
+    return {"status": save_data}
