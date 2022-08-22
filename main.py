@@ -75,13 +75,13 @@ def delete_pod(name: str):
 
 
 
-save_data = {}
+save_data = { "island": {}, "ship": {} }
 @app.post("/save/")
 def post_save(save: Save):
     global save_data
     save_data = save
-    return {"status": save_data}
+    return {"data": save_data}
 
 @app.get("/save/")
 def get_save():
-    return {"status": save_data}
+    return {"data": save_data}
