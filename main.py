@@ -27,6 +27,9 @@ class Save(BaseModel):
     island: Dict[str, str]
     ship: Dict[str, str]
 
+class Shipname(BaseModel):
+    name: str
+
 
 @app.get("/")
 def read_root():
@@ -64,13 +67,14 @@ def get_unused_port():
     return {"sugessted_port": ports}
 
 
-@app.delete("/pods/{name}")
-def delete_pod():
-    callback = k8s.delete_pod(name)
+@app.delete("/pods/")
+def delete_pod(shipname : Shipname):
+    callback = k8s.delete_pod(shipname.name)
     return {"deleted": callback}
 
 @app.delete("/services/{name}")
 def delete_pod(name: str):
+
     return {"status": "test"}
 
 
